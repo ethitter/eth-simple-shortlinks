@@ -4,7 +4,7 @@ Plugin Name: ETH Simple Shortlinks
 Plugin URI: https://ethitter.com/plugins/
 Description: Simple non-GET shortlinks using post IDs
 Author: Erick Hitter
-Version: 0.3
+Version: 0.4
 Author URI: https://ethitter.com/
 
 This program is free software; you can redistribute it and/or modify
