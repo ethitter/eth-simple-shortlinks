@@ -71,6 +71,7 @@ class ETH_Simple_Shortlinks {
 
 		// Shortlink
 		add_filter( 'get_shortlink', array( $this, 'filter_get_shortlink' ), 10, 2 );
+		add_action( 'admin_head-edit.php', array( $this, 'add_admin_header_assets' ) );
 		add_filter( 'post_row_actions', array( $this, 'filter_row_actions' ), 10, 2 );
 		add_filter( 'page_row_actions', array( $this, 'filter_row_actions' ), 10, 2 );
 	}
@@ -145,6 +146,29 @@ class ETH_Simple_Shortlinks {
 	}
 
 	/**
+	 * Header assets for shortlink in row actions
+	 */
+	public function add_admin_header_assets() {
+		global $typenow;
+		if ( ! in_array( $typenow, $this->supported_post_types ) ) {
+			return;
+		}
+
+		?>
+		<script type="text/javascript">
+
+			jQuery( document ) .ready( function( $ ) {
+				$( '.row-actions .shortlink a' ).click( function( e ) {
+					e.preventDefault();
+
+					prompt( 'URL:', $( this ).attr('href') );
+				} );
+			} );
+		</script>
+		<?php
+	}
+
+	/**
 	 * Provide the shortlink in row actions for easy access
 	 */
 	public function filter_row_actions( $actions, $post ) {
@@ -152,7 +176,7 @@ class ETH_Simple_Shortlinks {
 			return $actions;
 		}
 
-		$actions['shortlink'] = '<a style="cursor: pointer;" onclick="prompt( \'URL:\', \'' . esc_js( $this->get_shortlink( $post->ID ) ) . '\' );return false;">Shortlink</a>';
+		$actions['shortlink'] = '<a href="' . esc_js( $this->get_shortlink( $post->ID ) ) . '">Shortlink</a>';
 
 		return $actions;
 	}
