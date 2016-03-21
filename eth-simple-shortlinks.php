@@ -4,7 +4,7 @@ Plugin Name: ETH Simple Shortlinks
 Plugin URI: https://ethitter.com/plugins/
 Description: Simple non-GET shortlinks using post IDs
 Author: Erick Hitter
-Version: 0.1
+Version: 0.2
 Author URI: https://ethitter.com/
 
 This program is free software; you can redistribute it and/or modify
@@ -54,7 +54,7 @@ class ETH_Simple_Shortlinks {
 	 * Class properties
 	 */
 	private $slug = 'p';
-	private $qv = 'eth-shortlink';
+	private $qv   = 'eth-shortlink';
 
 	/**
 	 *
@@ -87,23 +87,19 @@ class ETH_Simple_Shortlinks {
 
 	/**
 	 * Catch this plugin's requests and issue redirects, otherwise WP will serve content at duplicate URLs
+	 *
+	 * Let's invalid post IDs fall through to WP's 404 handler, or anything else that might intercede
+	 *
+	 * URLs aren't validated in case plugins filter permalinks to point to external URLs
 	 */
 	public function action_parse_request( $request ) {
 		if ( isset( $request->query_vars[ $this->qv ] ) ) {
-			$home_url = user_trailingslashit( home_url() );
-
-			$dest = get_permalink( $request->query_vars['p'] );
+			$dest = get_permalink( $request->query_vars[ 'p' ] );
 
 			if ( $dest ) {
-				$dest   = wp_validate_redirect( $dest, $home_url );
-				$status = 301;
-			} else {
-				$dest   = $home_url;
-				$status = 302;
+				wp_redirect( $dest, 301 );
+				exit;
 			}
-
-			wp_redirect( $dest, $status );
-			exit;
 		}
 	}
 
@@ -123,7 +119,11 @@ class ETH_Simple_Shortlinks {
 			return $shortlink;
 		}
 
-		if ( ! in_array( get_post_status( $id ), array( 'publish', 'future' ) ) ) {
+		if ( ! in_array( get_post_status( $id ), apply_filters( 'eth_simple_shortlinks_allowed_post_statuses', array( 'publish', 'future' ) ) ) ) {
+			return $shortlink;
+		}
+
+		if ( ! in_array( get_post_type( $id ), apply_filters( 'eth_simple_shortlinks_allowed_post_types', array( 'post', 'page' ) ) ) ) {
 			return $shortlink;
 		}
 
