@@ -123,6 +123,10 @@ class ETH_Simple_Shortlinks {
 			return $shortlink;
 		}
 
+		if ( ! in_array( get_post_status( $id ), array( 'publish', 'future' ) ) ) {
+			return $shortlink;
+		}
+
 		return user_trailingslashit( home_url( sprintf( '%s/%d', $this->slug, $id ) ) );
 	}
 }
