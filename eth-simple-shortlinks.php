@@ -53,22 +53,27 @@ class ETH_Simple_Shortlinks {
 	/**
 	 * Class properties
 	 */
+	private $slug = 'p';
 	private $qv = 'eth-shortlink';
 
 	/**
 	 *
 	 */
 	private function __construct() {
+		// Request
 		add_action( 'init', array( $this, 'add_rewrite_rule' ) );
 		add_filter( 'query_vars', array( $this, 'filter_query_vars' ) );
 		add_action( 'parse_request', array( $this, 'action_parse_request' ) );
+
+		// Shortlink
+		add_filter( 'get_shortlink', array( $this, 'filter_get_shortlink' ), 10, 2 );
 	}
 
 	/**
 	 * Register rewrite rule
 	 */
 	public function add_rewrite_rule() {
-		add_rewrite_rule( '^p/([\d]+)/?$', 'index.php?p=$matches[1]&' . $this->qv . '=1', 'top' );
+		add_rewrite_rule( '^' . $this->slug . '/([\d]+)/?$', 'index.php?p=$matches[1]&' . $this->qv . '=1', 'top' );
 	}
 
 	/**
@@ -100,6 +105,25 @@ class ETH_Simple_Shortlinks {
 			wp_redirect( $dest, $status );
 			exit;
 		}
+	}
+
+	/**
+	 * Override shortlinks with this plugin's format
+	 */
+	public function filter_get_shortlink( $shortlink, $id ) {
+		if ( empty( $id ) ) {
+			$_p = get_post();
+
+			if ( ! empty( $_p->ID ) ) {
+				$id = $_p->ID;
+			}
+		}
+
+		if ( empty( $id ) ) {
+			return $shortlink;
+		}
+
+		return user_trailingslashit( home_url( sprintf( '%s/%d', $this->slug, $id ) ) );
 	}
 }
 
