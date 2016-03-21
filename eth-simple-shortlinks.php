@@ -4,7 +4,7 @@ Plugin Name: ETH Simple Shortlinks
 Plugin URI: https://ethitter.com/plugins/
 Description: Simple non-GET shortlinks using post IDs
 Author: Erick Hitter
-Version: 0.3
+Version: 0.4
 Author URI: https://ethitter.com/
 
 This program is free software; you can redistribute it and/or modify
@@ -134,11 +134,11 @@ class ETH_Simple_Shortlinks {
 			return $shortlink;
 		}
 
-		if ( ! in_array( get_post_status( $id ), $this->supported_post_statuses ) ) {
+		if ( ! $this->is_supported_post_status( get_post_status( $id ) ) ) {
 			return $shortlink;
 		}
 
-		if ( ! in_array( get_post_type( $id ), $this->supported_post_types ) ) {
+		if ( ! $this->is_supported_post_type( get_post_type( $id ) ) ) {
 			return $shortlink;
 		}
 
@@ -150,7 +150,7 @@ class ETH_Simple_Shortlinks {
 	 */
 	public function add_admin_header_assets() {
 		global $typenow;
-		if ( ! in_array( $typenow, $this->supported_post_types ) ) {
+		if ( ! $this->is_supported_post_type( $typenow ) ) {
 			return;
 		}
 
@@ -172,13 +172,27 @@ class ETH_Simple_Shortlinks {
 	 * Provide the shortlink in row actions for easy access
 	 */
 	public function filter_row_actions( $actions, $post ) {
-		if ( ! in_array( get_post_type( $post ), $this->supported_post_types ) ) {
+		if ( ! $this->is_supported_post_type( get_post_type( $post ) ) || ! $this->is_supported_post_status( get_post_status( $post ) ) ) {
 			return $actions;
 		}
 
 		$actions['shortlink'] = '<a href="' . esc_js( $this->get_shortlink( $post->ID ) ) . '">Shortlink</a>';
 
 		return $actions;
+	}
+
+	/**
+	 * Check if given post type is supported
+	 */
+	private function is_supported_post_type( $type ) {
+		return in_array( $type, $this->supported_post_types );
+	}
+
+	/**
+	 * Check if given post status is supported
+	 */
+	private function is_supported_post_status( $status ) {
+		return in_array( $status, $this->supported_post_statuses );
 	}
 
 	/**
