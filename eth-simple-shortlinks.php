@@ -172,7 +172,7 @@ class ETH_Simple_Shortlinks {
 	 * Provide the shortlink in row actions for easy access
 	 */
 	public function filter_row_actions( $actions, $post ) {
-		if ( ! in_array( get_post_type( $post ), $this->supported_post_types ) ) {
+		if ( ! in_array( get_post_type( $post ), $this->supported_post_types ) || ! in_array( get_post_status( $post ), $this->supported_post_statuses ) ) {
 			return $actions;
 		}
 
