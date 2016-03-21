@@ -51,9 +51,56 @@ class ETH_Simple_Shortlinks {
 	public function __call( $name = '', $args = array() ) { unset( $name, $args ); return null; }
 
 	/**
+	 * Class properties
+	 */
+	private $qv = 'eth-shortlink';
+
+	/**
 	 *
 	 */
-	private function __construct() {}
+	private function __construct() {
+		add_action( 'init', array( $this, 'add_rewrite_rule' ) );
+		add_filter( 'query_vars', array( $this, 'filter_query_vars' ) );
+		add_action( 'parse_request', array( $this, 'action_parse_request' ) );
+	}
+
+	/**
+	 * Register rewrite rule
+	 */
+	public function add_rewrite_rule() {
+		add_rewrite_rule( '^p/([\d]+)/?$', 'index.php?p=$matches[1]&' . $this->qv . '=1', 'top' );
+	}
+
+	/**
+	 * Add custom query var to those permitted, so it can be detected at `parse_request`
+	 */
+	public function filter_query_vars( $qv ) {
+		$qv[] = $this->qv;
+
+		return $qv;
+	}
+
+	/**
+	 * Catch this plugin's requests and issue redirects, otherwise WP will serve content at duplicate URLs
+	 */
+	public function action_parse_request( $request ) {
+		if ( isset( $request->query_vars[ $this->qv ] ) ) {
+			$home_url = user_trailingslashit( home_url() );
+
+			$dest = get_permalink( $request->query_vars['p'] );
+
+			if ( $dest ) {
+				$dest   = wp_validate_redirect( $dest, $home_url );
+				$status = 301;
+			} else {
+				$dest   = $home_url;
+				$status = 302;
+			}
+
+			wp_redirect( $dest, $status );
+			exit;
+		}
+	}
 }
 
 ETH_Simple_Shortlinks::get_instance();
