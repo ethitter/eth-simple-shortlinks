@@ -46,7 +46,7 @@ class ETH_Simple_Shortlinks {
 	/**
 	 * Dummy magic methods
 	 */
-	public function __clone() {_doing_it_wrong( __FUNCTION__, 'Cheatin&#8217; huh?', '0.1' ); }
+	public function __clone() { _doing_it_wrong( __FUNCTION__, 'Cheatin&#8217; huh?', '0.1' ); }
 	public function __wakeup() { _doing_it_wrong( __FUNCTION__, 'Cheatin&#8217; huh?', '0.1' ); }
 	public function __call( $name = '', $args = array() ) { unset( $name, $args ); return null; }
 
@@ -103,7 +103,7 @@ class ETH_Simple_Shortlinks {
 	/**
 	 * Catch this plugin's requests and issue redirects, otherwise WP will serve content at duplicate URLs
 	 *
-	 * Let's invalid post IDs fall through to WP's 404 handler, or anything else that might intercede
+	 * Allows invalid post IDs fall through to WP's 404 handler, or anything else that might intercede
 	 *
 	 * URLs aren't validated in case plugins filter permalinks to point to external URLs
 	 */
