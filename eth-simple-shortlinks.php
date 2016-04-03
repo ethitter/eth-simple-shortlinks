@@ -48,8 +48,8 @@ class ETH_Simple_Shortlinks {
 	/**
 	 * Dummy magic methods
 	 */
-	public function __clone() { _doing_it_wrong( __FUNCTION__, 'Cheatin&#8217; huh?', '0.1' ); }
-	public function __wakeup() { _doing_it_wrong( __FUNCTION__, 'Cheatin&#8217; huh?', '0.1' ); }
+	public function __clone() { _doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; uh?' ), '0.1' ); }
+	public function __wakeup() { _doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; uh?' ), '0.1' ); }
 	public function __call( $name = '', $args = array() ) { unset( $name, $args ); return null; }
 
 	/**
