@@ -4,7 +4,7 @@ Plugin Name: ETH Simple Shortlinks
 Plugin URI: https://ethitter.com/plugins/
 Description: Simple non-GET shortlinks using post IDs
 Author: Erick Hitter
-Version: 0.4
+Version: 0.5
 Author URI: https://ethitter.com/
 
 This program is free software; you can redistribute it and/or modify
@@ -56,31 +56,44 @@ class ETH_Simple_Shortlinks {
 	private $slug = 'p';
 	private $qv   = 'eth-shortlink';
 
+	private $plugin_supported = false;
+
 	private $supported_post_types    = array();
 	private $supported_post_statuses = array();
 
 	/**
-	 * Register actions and filters
+	 * Register plugin's setup action
 	 */
 	private function __construct() {
-		// Request
-		add_action( 'init', array( $this, 'add_rewrite_rule' ) );
+		add_action( 'init', array( $this, 'action_init' ) );
+	}
+
+	/**
+	 * Verify plugin is supported and register its functionality
+	 */
+	public function action_init() {
+		global $wp_rewrite;
+
+		// Plugin won't work if site doesn't use pretty permalinks
+		if ( empty( $wp_rewrite->permalink_structure ) ) {
+			return;
+		} else {
+			$this->plugin_supported = true;
+		}
+
+		// Register rewrite rule
+		add_rewrite_rule( '^' . $this->slug . '/([\d]+)/?$', 'index.php?p=$matches[1]&' . $this->qv . '=1', 'top' );
+
+		// Request handling
 		add_action( 'wp_loaded', array( $this, 'filter_support' ) );
 		add_filter( 'query_vars', array( $this, 'filter_query_vars' ) );
 		add_action( 'parse_request', array( $this, 'action_parse_request' ) );
 
-		// Shortlink
+		// Shortlink overrides
 		add_filter( 'get_shortlink', array( $this, 'filter_get_shortlink' ), 10, 2 );
 		add_action( 'admin_head-edit.php', array( $this, 'add_admin_header_assets' ) );
 		add_filter( 'post_row_actions', array( $this, 'filter_row_actions' ), 10, 2 );
 		add_filter( 'page_row_actions', array( $this, 'filter_row_actions' ), 10, 2 );
-	}
-
-	/**
-	 * Register rewrite rule
-	 */
-	public function add_rewrite_rule() {
-		add_rewrite_rule( '^' . $this->slug . '/([\d]+)/?$', 'index.php?p=$matches[1]&' . $this->qv . '=1', 'top' );
 	}
 
 	/**
@@ -199,6 +212,10 @@ class ETH_Simple_Shortlinks {
 	 * Utility method for building permlink
 	 */
 	public function get_shortlink( $post_id ) {
+		if ( ! $this->plugin_supported ) {
+			return wp_get_shortlink( $post_id );
+		}
+
 		return user_trailingslashit( home_url( sprintf( '%s/%d', $this->slug, $post_id ) ) );
 	}
 }
