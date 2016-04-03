@@ -6,6 +6,8 @@ Description: Simple non-GET shortlinks using post IDs
 Author: Erick Hitter
 Version: 0.5
 Author URI: https://ethitter.com/
+Text Domain: eth_simple_shortlinks
+Domain Path: /languages/
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -53,8 +55,11 @@ class ETH_Simple_Shortlinks {
 	/**
 	 * Class properties
 	 */
-	private $slug = 'p';
-	private $qv   = 'eth-shortlink';
+	private $name          = 'ETH Simple Shortlinks';
+	private $slug          = 'p';
+	private $rewrite_rule  = null;
+	private $rewrite_match = null;
+	private $qv            = 'eth-shortlink';
 
 	private $plugin_supported = false;
 
@@ -65,35 +70,85 @@ class ETH_Simple_Shortlinks {
 	 * Register plugin's setup action
 	 */
 	private function __construct() {
+		// Build rewrite parts using other class properties
+		$this->rewrite_rule  = '^' . $this->slug . '/([\d]+)/?$';
+		$this->rewrite_match = 'index.php?p=$matches[1]&' . $this->qv . '=1';
+
+		// Basic plugin actions
+		add_action( 'plugins_loaded', array( $this, 'action_plugins_loaded' ) );
 		add_action( 'init', array( $this, 'action_init' ) );
 	}
 
 	/**
-	 * Verify plugin is supported and register its functionality
+	 * Load plugin translations
+	 */
+	public function action_plugins_loaded() {
+		load_plugin_textdomain( 'eth_simple_shortlinks', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+	}
+
+	/**
+	 * Verify plugin is supported, then register its functionality
 	 */
 	public function action_init() {
 		global $wp_rewrite;
 
 		// Plugin won't work if site doesn't use pretty permalinks
 		if ( empty( $wp_rewrite->permalink_structure ) ) {
-			return;
+			add_action( 'admin_notices', array( $this, 'action_add_admin_notices' ) );
 		} else {
 			$this->plugin_supported = true;
+
+			// Admin notices
+			add_action( 'admin_notices', array( $this, 'action_add_admin_notices' ) );
+
+			// Register rewrite rule
+			add_rewrite_rule( $this->rewrite_rule, $this->rewrite_match, 'top' );
+
+			// Request handling
+			add_action( 'wp_loaded', array( $this, 'filter_support' ) );
+			add_filter( 'query_vars', array( $this, 'filter_query_vars' ) );
+			add_action( 'parse_request', array( $this, 'action_parse_request' ) );
+
+			// Shortlink overrides
+			add_filter( 'get_shortlink', array( $this, 'filter_get_shortlink' ), 10, 2 );
+			add_action( 'admin_head-edit.php', array( $this, 'add_admin_header_assets' ) );
+			add_filter( 'post_row_actions', array( $this, 'filter_row_actions' ), 10, 2 );
+			add_filter( 'page_row_actions', array( $this, 'filter_row_actions' ), 10, 2 );
+		}
+	}
+
+	/**
+	 * Display admin notices if plugin's requirements aren't met
+	 */
+	public function action_add_admin_notices() {
+		// Notices are only relevant if current user can get to the Permalinks and Plugins options screens
+		if ( ! current_user_can( 'manage_options') || ! current_user_can( 'activate_plugins' ) ) {
+			return;
 		}
 
-		// Register rewrite rule
-		add_rewrite_rule( '^' . $this->slug . '/([\d]+)/?$', 'index.php?p=$matches[1]&' . $this->qv . '=1', 'top' );
+		// Build notices
+		$message = '';
 
-		// Request handling
-		add_action( 'wp_loaded', array( $this, 'filter_support' ) );
-		add_filter( 'query_vars', array( $this, 'filter_query_vars' ) );
-		add_action( 'parse_request', array( $this, 'action_parse_request' ) );
+		if ( $this->plugin_supported ) {
+			// Check option for the plugin's rule
+			// The `$wp_rewrite` global will include it in `extra_rules_top` even though it hasn't been saved to the DB, and therefore isn't really active.
+			$rewrites = get_option( 'rewrite_rules' );
 
-		// Shortlink overrides
-		add_filter( 'get_shortlink', array( $this, 'filter_get_shortlink' ), 10, 2 );
-		add_action( 'admin_head-edit.php', array( $this, 'add_admin_header_assets' ) );
-		add_filter( 'post_row_actions', array( $this, 'filter_row_actions' ), 10, 2 );
-		add_filter( 'page_row_actions', array( $this, 'filter_row_actions' ), 10, 2 );
+			if ( is_array( $rewrites ) && ! array_key_exists( $this->rewrite_rule, $rewrites ) ) {
+				$message = sprintf( __( 'Please visit the <a href="%1$s">Permalinks</a> settings page to refresh your permalinks. Doing so will add the rules this plugin requires.', 'eth_simple_shortlinks' ), admin_url( 'options-permalink.php' ) );
+			}
+		} else {
+			$message = sprintf( __( 'Please enable <a href="%1$s">pretty permalinks</a>, otherwise disable this plugin as it is not compatible with "Plain" permalinks.', 'eth_simple_shortlinks' ), admin_url( 'options-permalink.php' ) );
+		}
+
+		// Display a notice if one exists
+		if ( ! empty( $message ) ) {
+			$message = sprintf( __( '<strong>%1$s</strong>: %2$s', 'eth_simple_shortlinks' ), $this->name, $message );
+
+			?><div class="error">
+				<p><?php echo $message; ?></p>
+			</div><?php
+		}
 	}
 
 	/**
@@ -189,7 +244,7 @@ class ETH_Simple_Shortlinks {
 			return $actions;
 		}
 
-		$actions['shortlink'] = '<a href="' . esc_js( $this->get_shortlink( $post->ID ) ) . '">Shortlink</a>';
+		$actions['shortlink'] = '<a href="' . esc_js( $this->get_shortlink( $post->ID ) ) . '">' . __( 'Shortlink' ) . '</a>';
 
 		return $actions;
 	}
@@ -212,6 +267,7 @@ class ETH_Simple_Shortlinks {
 	 * Utility method for building permlink
 	 */
 	public function get_shortlink( $post_id ) {
+		// Use Core's default when this plugin can't build a link
 		if ( ! $this->plugin_supported ) {
 			return wp_get_shortlink( $post_id );
 		}
@@ -227,7 +283,7 @@ ETH_Simple_Shortlinks::get_instance();
  */
 function eth_simple_shortlinks_get( $post_id ) {
 	if ( ! did_action( 'wp_loaded' ) ) {
-		_doing_it_wrong( __FUNCTION__, 'Shortlinks cannot be generated until after <code>wp_loaded</code>; this ensures that all post types are registered.', '0.3' );
+		_doing_it_wrong( __FUNCTION__, __( 'Shortlinks cannot be generated until after <code>wp_loaded</code>; this ensures that all post types are registered.', 'eth_simple_shortlinks' ), '0.3' );
 		return false;
 	}
 
