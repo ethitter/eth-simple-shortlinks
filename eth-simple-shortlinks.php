@@ -152,6 +152,10 @@ class ETH_Simple_Shortlinks {
 	}
 
 	/**
+	 * PLUGIN FUNCTIONALITY
+	 */
+
+	/**
 	 * Allow filtering of supported statuses and types
 	 */
 	public function filter_support() {
@@ -276,6 +280,9 @@ class ETH_Simple_Shortlinks {
 	}
 }
 
+/**
+ * One instance to rule them all
+ */
 ETH_Simple_Shortlinks::get_instance();
 
 /**
