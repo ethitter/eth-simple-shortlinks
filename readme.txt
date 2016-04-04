@@ -8,7 +8,7 @@ Stable tag: 0.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Convert WordPress's query-based shortlinks to pretty permalinks that are cacheable.
+Convert WordPress's query-based shortlinks to pretty permalinks that are cacheable. http://example.com/?p=123 becomes http://example.com/p/123/.
 
 == Description ==
 
