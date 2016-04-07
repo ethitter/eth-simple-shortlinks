@@ -4,7 +4,7 @@ Plugin Name: ETH Simple Shortlinks
 Plugin URI: https://ethitter.com/plugins/
 Description: Simple non-GET shortlinks using post IDs
 Author: Erick Hitter
-Version: 0.5
+Version: 0.6
 Author URI: https://ethitter.com/
 Text Domain: eth_simple_shortlinks
 Domain Path: /languages/
@@ -57,6 +57,7 @@ class ETH_Simple_Shortlinks {
 	 */
 	private $name          = 'ETH Simple Shortlinks';
 	private $slug          = 'p';
+	private $prefix        = '';
 	private $rewrite_rule  = null;
 	private $rewrite_match = null;
 	private $qv            = 'eth-shortlink';
@@ -70,10 +71,6 @@ class ETH_Simple_Shortlinks {
 	 * Register plugin's setup action
 	 */
 	private function __construct() {
-		// Build rewrite parts using other class properties
-		$this->rewrite_rule  = '^' . $this->slug . '/([\d]+)/?$';
-		$this->rewrite_match = 'index.php?p=$matches[1]&' . $this->qv . '=1';
-
 		// Basic plugin actions
 		add_action( 'plugins_loaded', array( $this, 'action_plugins_loaded' ) );
 		add_action( 'init', array( $this, 'action_init' ) );
@@ -97,6 +94,16 @@ class ETH_Simple_Shortlinks {
 			add_action( 'admin_notices', array( $this, 'action_add_admin_notices' ) );
 		} else {
 			$this->plugin_supported = true;
+
+			// Build rewrite parts using other class properties
+			global $wp_rewrite;
+
+			if ( '/' !== $wp_rewrite->front ) {
+				$this->prefix = substr( $wp_rewrite->front, 1 );
+			}
+
+			$this->rewrite_rule  = '^' . $this->prefix . $this->slug . '/([\d]+)/?$';
+			$this->rewrite_match = 'index.php?p=$matches[1]&' . $this->qv . '=1';
 
 			// Admin notices
 			add_action( 'admin_notices', array( $this, 'action_add_admin_notices' ) );
@@ -276,7 +283,7 @@ class ETH_Simple_Shortlinks {
 			return wp_get_shortlink( $post_id );
 		}
 
-		return user_trailingslashit( home_url( sprintf( '%s/%d', $this->slug, $post_id ) ) );
+		return user_trailingslashit( home_url( sprintf( '%s%s/%d', $this->prefix, $this->slug, $post_id ) ) );
 	}
 }
 
