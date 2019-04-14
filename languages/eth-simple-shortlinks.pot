@@ -1,0 +1,76 @@
+# Copyright (C) 2019 Erick Hitter
+# This file is distributed under the same license as the ETH Simple Shortlinks package.
+msgid ""
+msgstr ""
+"Project-Id-Version: ETH Simple Shortlinks 0.5\n"
+"Report-Msgid-Bugs-To: "
+"https://wordpress.org/support/plugin/eth-simple-shortlinks\n"
+"POT-Creation-Date: 2019-04-14 04:31:11+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2019-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"X-Generator: grunt-wp-i18n 0.5.4\n"
+"X-Poedit-KeywordsList: "
+"__;_e;_x:1,2c;_ex:1,2c;_n:1,2;_nx:1,2,4c;_n_noop:1,2;_nx_noop:1,2,3c;esc_"
+"attr__;esc_html__;esc_attr_e;esc_html_e;esc_attr_x:1,2c;esc_html_x:1,2c;\n"
+"Language: en\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-Country: United States\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-Basepath: ../\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-Bookmarks: \n"
+"X-Textdomain-Support: yes\n"
+
+#: eth-simple-shortlinks.php:51 eth-simple-shortlinks.php:52
+msgid "Cheatin&#8217; uh?"
+msgstr ""
+
+#: eth-simple-shortlinks.php:138
+msgid ""
+"Please visit the <a href=\"%1$s\">Permalinks</a> settings page to refresh "
+"your permalinks. Doing so will add the rules this plugin requires."
+msgstr ""
+
+#: eth-simple-shortlinks.php:141
+msgid ""
+"Please enable <a href=\"%1$s\">pretty permalinks</a>, otherwise disable "
+"this plugin as it is not compatible with \"Plain\" permalinks."
+msgstr ""
+
+#: eth-simple-shortlinks.php:146
+msgid "<strong>%1$s</strong>: %2$s"
+msgstr ""
+
+#: eth-simple-shortlinks.php:251
+msgid "Shortlink"
+msgstr ""
+
+#: eth-simple-shortlinks.php:293
+msgid ""
+"Shortlinks cannot be generated until after <code>wp_loaded</code>; this "
+"ensures that all post types are registered."
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+msgid "ETH Simple Shortlinks"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "https://ethitter.com/plugins/"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid "Simple non-GET shortlinks using post IDs"
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "Erick Hitter"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "https://ethitter.com/"
+msgstr ""
