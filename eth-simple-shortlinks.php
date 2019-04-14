@@ -48,8 +48,8 @@ class ETH_Simple_Shortlinks {
 	/**
 	 * Dummy magic methods
 	 */
-	public function __clone() { _doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; uh?' ), '0.1' ); }
-	public function __wakeup() { _doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; uh?' ), '0.1' ); }
+	public function __clone() { _doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; uh?', 'eth_simple_shortlinks' ), '0.1' ); }
+	public function __wakeup() { _doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; uh?', 'eth_simple_shortlinks' ), '0.1' ); }
 	public function __call( $name = '', $args = array() ) { unset( $name, $args ); return null; }
 
 	/**
@@ -248,7 +248,7 @@ class ETH_Simple_Shortlinks {
 			return $actions;
 		}
 
-		$actions['shortlink'] = '<a href="' . esc_js( $this->get_shortlink( $post->ID ) ) . '">' . __( 'Shortlink' ) . '</a>';
+		$actions['shortlink'] = '<a href="' . esc_js( $this->get_shortlink( $post->ID ) ) . '">' . __( 'Shortlink', 'eth_simple_shortlinks' ) . '</a>';
 
 		return $actions;
 	}
