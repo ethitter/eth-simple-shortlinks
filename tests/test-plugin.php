@@ -31,9 +31,9 @@ class PluginTest extends WP_UnitTestCase {
 
 		static::$post_id_published = $this->factory->post->create();
 		static::$post_id_draft     = $this->factory->post->create(
-			[
+			array(
 				'post_status' => 'draft',
-			]
+			)
 		);
 	}
 
@@ -53,10 +53,10 @@ class PluginTest extends WP_UnitTestCase {
 	 */
 	public function test_published_post_redirect() {
 		$fake_request = new \stdClass();
-		$fake_request->query_vars = [
+		$fake_request->query_vars = array(
 			'p'             => static::$post_id_published,
 			'eth-shortlink' => true,
-		];
+		);
 
 		$redirect = ETH_Simple_Shortlinks::get_instance()->get_redirect_for_request( $fake_request );
 
@@ -69,10 +69,10 @@ class PluginTest extends WP_UnitTestCase {
 	 */
 	public function test_draft_post_redirect() {
 		$fake_request = new \stdClass();
-		$fake_request->query_vars = [
+		$fake_request->query_vars = array(
 			'p'             => static::$post_id_draft,
 			'eth-shortlink' => true,
-		];
+		);
 
 		$redirect = ETH_Simple_Shortlinks::get_instance()->get_redirect_for_request( $fake_request );
 
