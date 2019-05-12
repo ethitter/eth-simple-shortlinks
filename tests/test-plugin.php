@@ -78,27 +78,4 @@ class PluginTest extends WP_UnitTestCase {
 
 		$this->assertNull( $redirect, 'Failed to assert that redirect is not generated for unsupported post status.' );
 	}
-
-	/**
-	 * Indirect test of redirection.
-	 */
-	public function test_published_post_redirect_through_artifacts(): void {
-		add_filter( 'eth_simple_shortlinks_verify_requested_post_support', function( $verify ) {
-			$this->assertEquals( static::$post_id_published, get_query_var( 'p' ), 'Failed to assert that requested post ID matches ID of published post.' );
-
-			return $verify;
-		} );
-
-		add_filter( 'eth_simple_shortlinks_redirect_url', function( $url ) {
-			$this->assertEquals( get_permalink( static::$post_id_published ), $url, 'Failed to assert that redirect URL is published post\'s permalink.' );
-
-			return $url;
-		} );
-
-		$this->go_to( wp_get_shortlink( static::$post_id_published ) );
-
-		$this->assertQueryTrue(
-			'is_404'
-		);
-	}
 }
