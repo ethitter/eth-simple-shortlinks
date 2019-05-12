@@ -23,6 +23,9 @@ require_once $_tests_dir . '/includes/functions.php';
  * Manually load the plugin being tested.
  */
 function _manually_load_plugin() {
+	// Plugin requires a permalink structure to operate.
+	_set_default_permalink_structure_for_tests();
+
 	require dirname( dirname( __FILE__ ) ) . '/eth-simple-shortlinks.php';
 }
 tests_add_filter( 'muplugins_loaded', '_manually_load_plugin' );

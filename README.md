@@ -4,7 +4,7 @@
 **Tags:** seo, meta tags  
 **Requires at least:** 4.4  
 **Tested up to:** 5.2  
-**Stable tag:** 0.5  
+**Stable tag:** 0.6  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -30,7 +30,24 @@ For example, http://example.com/?p=123 becomes http://example.com/p/123/.
 
 No, shortlinks use the posts' IDs, so aren't available for modification.
 
+### Why aren't redirects validated? ###
+
+Sites may use plugins that allow a post object's permalink to be set to an external URL, and this plugin is designed to respect those plugins.
+
+If you wish to validate the redirects issued by this plugin, you can use the `eth_simple_shortlinks_redirect_url` filter to apply `wp_validate_redirect()` to the destination URL.
+
+### After upgrading to 0.6, redirects stopped working ###
+
+Beginning with release 0.6, before performing a redirect, the plugin checks that the post type and post status are supported. Previously, these checks were only applied when overriding an object's shortlink.
+
+If, after upgrading, redirects stop working, use the `eth_simple_shortlinks_allowed_post_types` and `eth_simple_shortlinks_allowed_post_statuses` filters to permit additional types and statuses, or use the `eth_simple_shortlinks_verify_requested_post_support` filter to disable the supports checks.
+
 ## Changelog ##
+
+### 0.6 ###
+* Introduce filters in redirection handling.
+* Apply supported post-type and post-status checks before redirecting.
+* Conform to WordPress VIP's Coding Standards.
 
 ### 0.5 ###
 * Admin notices when permalinks won't support the plugin
@@ -39,3 +56,9 @@ No, shortlinks use the posts' IDs, so aren't available for modification.
 
 ### 0.4 ###
 * Initial release
+
+## Upgrade Notice ##
+
+### 0.6 ###
+
+Applies supported post-type and post-status checks before performing redirect. If, after upgrading, redirects stop working, see the "After upgrading to 0.6, redirects stopped working" section of the FAQ.
