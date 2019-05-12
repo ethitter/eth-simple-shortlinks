@@ -26,7 +26,7 @@ function _manually_load_plugin() {
 	// Plugin requires a permalink structure to operate.
 	_set_default_permalink_structure_for_tests();
 
-	require dirname( __FILE__, 2 ) . '/eth-simple-shortlinks.php';
+	require dirname( dirname( __FILE__ ) ) . '/eth-simple-shortlinks.php';
 }
 tests_add_filter( 'muplugins_loaded', '_manually_load_plugin' );
 
