@@ -28,7 +28,6 @@ PHPunit:PHP5.3:MySQL:
   script:
     - find . -type "f" -iname "*.php" | xargs -L "1" php -l
     - phpunit
-  allow_failure: true
 
 PHPunit:PHP5.6:MySQL:
   stage: test
@@ -38,7 +37,6 @@ PHPunit:PHP5.6:MySQL:
   script:
     - find . -type "f" -iname "*.php" | xargs -L "1" php -l
     - phpunit
-  allow_failure: true
 
 PHPunit:PHP7.0:MySQL:
   stage: test
@@ -48,7 +46,6 @@ PHPunit:PHP7.0:MySQL:
   script:
     - find . -type "f" -iname "*.php" | xargs -L "1" php -l
     - phpunit
-  allow_failure: true
 
 PHPunit:PHP7.1:MySQL:
   stage: test
@@ -58,7 +55,6 @@ PHPunit:PHP7.1:MySQL:
   script:
     - find . -type "f" -iname "*.php" | xargs -L "1" php -l
     - phpunit
-  allow_failure: true
 
 PHPunit:PHP7.2:MySQL:
   stage: test
@@ -68,7 +64,6 @@ PHPunit:PHP7.2:MySQL:
   script:
     - find . -type "f" -iname "*.php" | xargs -L "1" php -l
     - phpunit
-  allow_failure: true
 
 PHPunit:PHP7.3:MySQL:
   stage: test
@@ -78,7 +73,6 @@ PHPunit:PHP7.3:MySQL:
   script:
     - find . -type "f" -iname "*.php" | xargs -L "1" php -l
     - phpunit
-  allow_failure: true
 
 PHPCS:
   stage: test
