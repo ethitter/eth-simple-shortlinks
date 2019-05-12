@@ -271,32 +271,34 @@ class ETH_Simple_Shortlinks {
 	 * @param WP $request WP object.
 	 */
 	public function action_parse_request( $request ) {
-		if ( isset( $request->query_vars[ $this->qv ] ) ) {
-			$dest = get_permalink( $request->query_vars['p'] );
+		if ( ! isset( $request->query_vars[ $this->qv ], $request->query_vars['p'] ) ) {
+			return;
+		}
 
-			if ( $dest ) {
-				/**
-				 * Filters the redirect URL.
-				 *
-				 * @param string $dest    Redirect destination.
-				 * @param WP    $request WP object.
-				 */
-				$dest = apply_filters( 'eth_simple_shortlinks_redirect_url', $dest, $request );
+		$dest = get_permalink( $request->query_vars['p'] );
 
-				/**
-				 * Filters the redirect status code.
-				 *
-				 * @param int    $status_code Redirect status code.
-				 * @param string $dest        Redirect destination.
-				 * @param WP     $request     WP object.
-				 */
-				$status_code = (int) apply_filters( 'eth_simple_shortlinks_redirect_status', 301, $dest, $request );
+		/**
+		 * Filters the redirect URL.
+		 *
+		 * @param string $dest    Redirect destination.
+		 * @param WP    $request WP object.
+		 */
+		$dest = apply_filters( 'eth_simple_shortlinks_redirect_url', $dest, $request );
 
-				// URLs aren't validated in case plugins filter permalinks to point to external URLs.
-				// phpcs:ignore WordPress.Security.SafeRedirect.wp_redirect_wp_redirect
-				wp_redirect( $dest, $status_code );
-				exit;
-			}
+		if ( $dest ) {
+			/**
+			 * Filters the redirect status code.
+			 *
+			 * @param int    $status_code Redirect status code.
+			 * @param string $dest        Redirect destination.
+			 * @param WP     $request     WP object.
+			 */
+			$status_code = (int) apply_filters( 'eth_simple_shortlinks_redirect_status', 301, $dest, $request );
+
+			// URLs aren't validated in case plugins filter permalinks to point to external URLs.
+			// phpcs:ignore WordPress.Security.SafeRedirect.wp_redirect_wp_redirect
+			wp_redirect( $dest, $status_code );
+			exit;
 		}
 	}
 
