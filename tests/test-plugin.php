@@ -26,7 +26,7 @@ class PluginTest extends WP_UnitTestCase {
 	/**
 	 * Create a post to test with.
 	 */
-	public function setUp(): void {
+	public function setUp() {
 		parent::setUp();
 
 		static::$post_id_published = $this->factory->post->create();
@@ -40,7 +40,7 @@ class PluginTest extends WP_UnitTestCase {
 	/**
 	 * Test shortlink overrides.
 	 */
-	public function test_shortlink_filters(): void {
+	public function test_shortlink_filters() {
 		$expected_published = user_trailingslashit( home_url( 'p/' . static::$post_id_published ) );
 		$expected_draft     = add_query_arg( 'p', static::$post_id_draft, user_trailingslashit( home_url() ) );
 
@@ -51,7 +51,7 @@ class PluginTest extends WP_UnitTestCase {
 	/**
 	 * Test redirect parsing for supported post.
 	 */
-	public function test_published_post_redirect(): void {
+	public function test_published_post_redirect() {
 		$fake_request = new \stdClass();
 		$fake_request->query_vars = [
 			'p'             => static::$post_id_published,
@@ -67,7 +67,7 @@ class PluginTest extends WP_UnitTestCase {
 	/**
 	 * Test redirect parsing for unsupported post.
 	 */
-	public function test_draft_post_redirect(): void {
+	public function test_draft_post_redirect() {
 		$fake_request = new \stdClass();
 		$fake_request->query_vars = [
 			'p'             => static::$post_id_draft,
