@@ -275,25 +275,56 @@ class ETH_Simple_Shortlinks {
 			return;
 		}
 
-		$dest = get_permalink( $request->query_vars['p'] );
+		$post_object = get_post( $request->query_vars['p'] );
+
+		if ( ! $post_object instanceof WP_Post ) {
+			return;
+		}
+
+		/**
+		 * Filters if post type and status should be validated.
+		 *
+		 * @since 0.6
+		 *
+		 * @param bool     $validate   Perform validation.
+		 * @param WP_Post $post_object Post being redirected to.
+		 * @param WP      $request     WP object.
+		 */
+		if (
+			apply_filters( 'eth_simple_shortlinks_verify_requested_post_support', true, $post_object, $request ) &&
+			(
+				! $this->is_supported_post_type( $post_object->post_type ) ||
+				! $this->is_supported_post_status( $post_object->post_status )
+			)
+		) {
+			return;
+		}
+
+		$dest = get_permalink( $post_object );
 
 		/**
 		 * Filters the redirect URL.
 		 *
-		 * @param string $dest    Redirect destination.
-		 * @param WP    $request WP object.
+		 * @since 0.6
+		 *
+		 * @param string  $dest        Redirect destination.
+		 * @param WP_Post $post_object Post being redirected to.
+		 * @param WP      $request     WP object.
 		 */
-		$dest = apply_filters( 'eth_simple_shortlinks_redirect_url', $dest, $request );
+		$dest = apply_filters( 'eth_simple_shortlinks_redirect_url', $dest, $post_object, $request );
 
 		if ( $dest ) {
 			/**
 			 * Filters the redirect status code.
 			 *
-			 * @param int    $status_code Redirect status code.
-			 * @param string $dest        Redirect destination.
-			 * @param WP     $request     WP object.
+			 * @since 0.6
+			 *
+			 * @param int     $status_code Redirect status code.
+			 * @param string  $dest        Redirect destination.
+			 * @param WP_Post $post_object Post being redirected to.
+			 * @param WP      $request     WP object.
 			 */
-			$status_code = (int) apply_filters( 'eth_simple_shortlinks_redirect_status', 301, $dest, $request );
+			$status_code = (int) apply_filters( 'eth_simple_shortlinks_redirect_status', 301, $dest, $post_object, $request );
 
 			// URLs aren't validated in case plugins filter permalinks to point to external URLs.
 			// phpcs:ignore WordPress.Security.SafeRedirect.wp_redirect_wp_redirect
