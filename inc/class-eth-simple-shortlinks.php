@@ -18,7 +18,7 @@ class ETH_Simple_Shortlinks {
 	 *
 	 * @var self
 	 */
-	private static $instance = null;
+	private static $instance;
 
 	/**
 	 * Instantiate singleton
@@ -271,14 +271,37 @@ class ETH_Simple_Shortlinks {
 	 * @param WP $request WP object.
 	 */
 	public function action_parse_request( $request ) {
-		if ( ! isset( $request->query_vars[ $this->qv ], $request->query_vars['p'] ) ) {
+		$redirect = $this->get_redirect_for_request( $request );
+
+		if ( null === $redirect ) {
 			return;
+		}
+
+		/**
+		 * URLs aren't validated in case plugins filter permalinks to point to external URLs.
+		 *
+		 * If validation is desired, hook into the `eth_simple_shortlinks_redirect_url` filter.
+		 */
+		// phpcs:ignore WordPress.Security.SafeRedirect.wp_redirect_wp_redirect
+		wp_redirect( $redirect->destination, $redirect->status_code );
+		exit;
+	}
+
+	/**
+	 * Parse a given WP object for its redirect destination.
+	 *
+	 * @param WP $request WP object.
+	 * @return \stdClass|null
+	 */
+	public function get_redirect_for_request( $request ) {
+		if ( ! isset( $request->query_vars[ $this->qv ], $request->query_vars['p'] ) ) {
+			return null;
 		}
 
 		$post_object = get_post( $request->query_vars['p'] );
 
 		if ( ! $post_object instanceof WP_Post ) {
-			return;
+			return null;
 		}
 
 		/**
@@ -297,40 +320,37 @@ class ETH_Simple_Shortlinks {
 				! $this->is_supported_post_status( $post_object->post_status )
 			)
 		) {
-			return;
+			return null;
 		}
-
-		$dest = get_permalink( $post_object );
 
 		/**
 		 * Filters the redirect URL.
 		 *
 		 * @since 0.6
 		 *
-		 * @param string  $dest        Redirect destination.
+		 * @param string  $destination Redirect destination.
 		 * @param WP_Post $post_object Post being redirected to.
 		 * @param WP      $request     WP object.
 		 */
-		$dest = apply_filters( 'eth_simple_shortlinks_redirect_url', $dest, $post_object, $request );
+		$destination = apply_filters( 'eth_simple_shortlinks_redirect_url', get_permalink( $post_object ), $post_object, $request );
 
-		if ( $dest ) {
-			/**
-			 * Filters the redirect status code.
-			 *
-			 * @since 0.6
-			 *
-			 * @param int     $status_code Redirect status code.
-			 * @param string  $dest        Redirect destination.
-			 * @param WP_Post $post_object Post being redirected to.
-			 * @param WP      $request     WP object.
-			 */
-			$status_code = (int) apply_filters( 'eth_simple_shortlinks_redirect_status', 301, $dest, $post_object, $request );
+		/**
+		 * Filters the redirect status code.
+		 *
+		 * @since 0.6
+		 *
+		 * @param int     $status_code Redirect status code.
+		 * @param string  $destination Redirect destination.
+		 * @param WP_Post $post_object Post being redirected to.
+		 * @param WP      $request     WP object.
+		 */
+		$status_code = (int) apply_filters( 'eth_simple_shortlinks_redirect_status', 301, $destination, $post_object, $request );
 
-			// URLs aren't validated in case plugins filter permalinks to point to external URLs.
-			// phpcs:ignore WordPress.Security.SafeRedirect.wp_redirect_wp_redirect
-			wp_redirect( $dest, $status_code );
-			exit;
+		if ( empty( $destination ) || empty( $status_code ) ) {
+			return null;
 		}
+
+		return (object) compact( 'destination', 'status_code' );
 	}
 
 	/**
