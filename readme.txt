@@ -4,11 +4,11 @@ Donate link: https://ethitter.com/donate/
 Tags: seo, meta tags
 Requires at least: 4.4
 Tested up to: 6.0
-Stable tag: 0.6
+Stable tag: 0.6.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Convert WordPress's query-based shortlinks to pretty permalinks that are cacheable. http://example.com/?p=123 becomes http://example.com/p/123/.
+Convert WordPress's query-based shortlinks to pretty permalinks that are cacheable. https://example.com/?p=123 becomes https://example.com/p/123/.
 
 == Description ==
 
@@ -44,6 +44,9 @@ If, after upgrading, redirects stop working, use the `eth_simple_shortlinks_allo
 
 == Changelog ==
 
+= 0.6.1 =
+* Fix translation support.
+
 = 0.6 =
 * Introduce filters in redirection handling.
 * Apply supported post-type and post-status checks before redirecting.
@@ -59,6 +62,8 @@ If, after upgrading, redirects stop working, use the `eth_simple_shortlinks_allo
 
 == Upgrade Notice ==
 
-= 0.6 =
+= 0.6.1 =
+Fixes translation support.
 
+= 0.6 =
 Applies supported post-type and post-status checks before performing redirect. If, after upgrading, redirects stop working, see the "After upgrading to 0.6, redirects stopped working" section of the FAQ.

@@ -10,9 +10,9 @@
  * Plugin URI: https://ethitter.com/plugins/
  * Description: Simple non-GET shortlinks using post IDs
  * Author: Erick Hitter
- * Version: 0.6
+ * Version: 0.6.1
  * Author URI: https://ethitter.com/
- * Text Domain: eth_simple_shortlinks
+ * Text Domain: eth-simple-shortlinks
  * Domain Path: /languages/
  *
  * This program is free software; you can redistribute it and/or modify

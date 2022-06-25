@@ -26,8 +26,8 @@ class PluginTest extends WP_UnitTestCase {
 	/**
 	 * Create a post to test with.
 	 */
-	public function setUp() {
-		parent::setUp();
+	public function set_up() {
+		parent::set_up();
 
 		static::$post_id_published = $this->factory->post->create();
 		static::$post_id_draft     = $this->factory->post->create(

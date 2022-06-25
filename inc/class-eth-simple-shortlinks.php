@@ -35,14 +35,14 @@ class ETH_Simple_Shortlinks {
 	 * Dummy magic method
 	 */
 	public function __clone() {
-		_doing_it_wrong( __FUNCTION__, esc_html__( 'Cheatin&#8217; uh?', 'eth_simple_shortlinks' ), '0.1' );
+		_doing_it_wrong( __FUNCTION__, esc_html__( 'Cheatin&#8217; uh?', 'eth-simple-shortlinks' ), '0.1' );
 	}
 
 	/**
 	 * Dummy magic method
 	 */
 	public function __wakeup() {
-		_doing_it_wrong( __FUNCTION__, esc_html__( 'Cheatin&#8217; uh?', 'eth_simple_shortlinks' ), '0.1' );
+		_doing_it_wrong( __FUNCTION__, esc_html__( 'Cheatin&#8217; uh?', 'eth-simple-shortlinks' ), '0.1' );
 	}
 
 	/**
@@ -130,9 +130,9 @@ class ETH_Simple_Shortlinks {
 	 */
 	public function action_plugins_loaded() {
 		load_plugin_textdomain(
-			'eth_simple_shortlinks',
+			'eth-simple-shortlinks',
 			false,
-			dirname( plugin_basename( __FILE__ ) ) . '/languages/'
+			dirname( dirname( plugin_basename( __FILE__ ) ) ) . '/languages/'
 		);
 	}
 
@@ -190,7 +190,7 @@ class ETH_Simple_Shortlinks {
 					/* translators: 1: URL of permalink options page. */
 					__(
 						'Please visit the <a href="%1$s">Permalinks</a> settings page to refresh your permalinks. Doing so will add the rules this plugin requires.',
-						'eth_simple_shortlinks'
+						'eth-simple-shortlinks'
 					),
 					admin_url( 'options-permalink.php' )
 				);
@@ -200,7 +200,7 @@ class ETH_Simple_Shortlinks {
 				/* translators: 1: URL of permalink options page. */
 				__(
 					'Please enable <a href="%1$s">pretty permalinks</a>, otherwise disable this plugin as it is not compatible with "Plain" permalinks.',
-					'eth_simple_shortlinks'
+					'eth-simple-shortlinks'
 				),
 				admin_url( 'options-permalink.php' )
 			);
@@ -212,7 +212,7 @@ class ETH_Simple_Shortlinks {
 				/* translators: 1: Plugin name, 2: Notice text. */
 				__(
 					'<strong>%1$s</strong>: %2$s',
-					'eth_simple_shortlinks'
+					'eth-simple-shortlinks'
 				),
 				$this->name,
 				$message
@@ -419,7 +419,7 @@ class ETH_Simple_Shortlinks {
 			return $actions;
 		}
 
-		$actions['shortlink'] = '<a href="' . esc_js( $this->get_shortlink( $post->ID ) ) . '">' . __( 'Shortlink', 'eth_simple_shortlinks' ) . '</a>';
+		$actions['shortlink'] = '<a href="' . esc_js( $this->get_shortlink( $post->ID ) ) . '">' . __( 'Shortlink', 'eth-simple-shortlinks' ) . '</a>';
 
 		return $actions;
 	}
@@ -478,7 +478,7 @@ function eth_simple_shortlinks_get( $post_id ) {
 			wp_kses_post(
 				__(
 					'Shortlinks cannot be generated until after <code>wp_loaded</code>; this ensures that all post types are registered.',
-					'eth_simple_shortlinks'
+					'eth-simple-shortlinks'
 				)
 			),
 			'0.3'

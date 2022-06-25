@@ -9,7 +9,7 @@ module.exports = function( grunt ) {
 
 		addtextdomain: {
 			options: {
-				textdomain: 'eth_simple_shortlinks',
+				textdomain: 'eth-simple-shortlinks',
 			},
 			update_all_domains: {
 				options: {
