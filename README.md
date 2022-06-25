@@ -16,7 +16,7 @@ WordPress 3.0 introduced a native shortlinks feature, which builds URLs using qu
 
 Posts and pages are supported by default, while filters make it possible to support other post types.
 
-For example, http://example.com/?p=123 becomes http://example.com/p/123/.
+For example, https://example.com/?p=123 becomes https://example.com/p/123/.
 
 ## Installation ##
 
