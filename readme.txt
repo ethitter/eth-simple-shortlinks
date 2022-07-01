@@ -1,10 +1,11 @@
 === ETH Simple Shortlinks ===
 Contributors: ethitter
 Donate link: https://ethitter.com/donate/
-Tags: seo, meta tags
+Tags: shortlink, shortlinks
 Requires at least: 4.4
 Tested up to: 6.0
 Stable tag: 0.6.1
+Requires PHP: 7.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
