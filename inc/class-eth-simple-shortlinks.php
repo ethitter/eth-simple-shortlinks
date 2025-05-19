@@ -471,6 +471,7 @@ ETH_Simple_Shortlinks::get_instance();
  * @param int $post_id Post ID.
  * @return string
  */
+// phpcs:ignore Squiz.Commenting.FunctionComment.Missing, Universal.Files.SeparateFunctionsFromOO.Mixed
 function eth_simple_shortlinks_get( $post_id ) {
 	if ( ! did_action( 'wp_loaded' ) ) {
 		_doing_it_wrong(
