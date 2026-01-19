@@ -3,7 +3,7 @@
 **Donate link:** https://ethitter.com/donate/  
 **Tags:** shortlink, shortlinks  
 **Requires at least:** 4.4  
-**Tested up to:** 6.8  
+**Tested up to:** 6.9  
 **Stable tag:** 0.6.1  
 **Requires PHP:** 7.2  
 **License:** GPLv2 or later  
